@@ -1,4 +1,4 @@
-name: codex
+name: agentic
 services:
   master:
     container_name: master
@@ -6,7 +6,7 @@ services:
     build:
       context: ./proxy
       dockerfile: Dockerfile
-    image: codex-proxy:latest
+    image: agentic-proxy:latest
     restart: unless-stopped
     ports:
       - "4500:4500"
@@ -15,7 +15,7 @@ services:
     container_name: codex-worker-1
     platform: linux/amd64
     build:
-      context: .
+      context: ./codex
       dockerfile: Dockerfile
     image: base-codex:latest
     restart: unless-stopped
@@ -25,14 +25,14 @@ services:
     entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
     command: ["--listen", "ws://127.0.0.1:4501", "--remote-control"]
     volumes:
-      - ./container-entrypoint.sh:/container-entrypoint.sh:ro
+      - ./codex/container-entrypoint.sh:/container-entrypoint.sh:ro
       - ./data/worker-1:/persist
 
   codex-worker-2:
     container_name: codex-worker-2
     platform: linux/amd64
     build:
-      context: .
+      context: ./codex
       dockerfile: Dockerfile
     image: base-codex:latest
     restart: unless-stopped
@@ -42,5 +42,5 @@ services:
     entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
     command: ["--listen", "ws://127.0.0.1:4502", "--remote-control"]
     volumes:
-      - ./container-entrypoint.sh:/container-entrypoint.sh:ro
+      - ./codex/container-entrypoint.sh:/container-entrypoint.sh:ro
       - ./data/worker-2:/persist
