@@ -74,5 +74,5 @@ run_privileged mv "$PATH_PROXY_RUNTIME/config.json.tmp" "$PATH_PROXY_RUNTIME/con
 rm -rf "$PATH_TMP_WORK"
 trap - EXIT
 
-exec "$PATH_PROXY_RUNTIME/.venv/bin/python" "$PATH_PROXY_RUNTIME/proxy.py" \
-	--config-file "$PATH_PROXY_RUNTIME/config.json"
+"$PATH_PROXY_RUNTIME/.venv/bin/python" "$PATH_PROXY_RUNTIME/proxy.py" \
+	--config-file "$PATH_PROXY_RUNTIME/config.json" &

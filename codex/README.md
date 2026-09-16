@@ -29,12 +29,12 @@ Requires Linux x64, a POSIX shell (`sh`), `curl`, `tar`, `xz`, and `python3`.
 curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sh
 ```
 
-Installs the runtime under `/opt/codex` and links it at `~/.cache/codex-runtimes/codex-primary-runtime`. Codex and plugins are installed for your account; only `/opt/codex` writes require sudo.
+Installs the runtime under `/opt/codex` and links it at `~/.cache/codex-runtimes/codex-primary-runtime`. Codex and plugins are installed for the current account. Setup detects root automatically and uses `sudo` for `/opt/codex` writes only when needed.
 
 To install for root:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sudo -H sh -s -- --root
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sudo -H sh
 ```
 
 In containers already running as root, omit `sudo -H`.
@@ -65,7 +65,7 @@ We provide a simple [proxy.py](../proxy/proxy.py) that checks each client's conf
 curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/setup.sh | sh
 ```
 
-[run.sh](../proxy/run.sh) writes `/opt/agentic/proxy/config.json` from its options and starts the installed proxy in the foreground. It automatically uses `sudo` for config installation when needed; the proxy itself runs as your account:
+[run.sh](../proxy/run.sh) writes `/opt/agentic/proxy/config.json` from its options and starts the installed proxy in the background. It automatically uses `sudo` for config installation when needed; the proxy itself runs as your account:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/run.sh | sh -s -- --host 127.0.0.1 --port 4500 --access-token token \

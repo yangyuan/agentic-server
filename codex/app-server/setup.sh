@@ -2,18 +2,8 @@
 set -e
 
 EFFECTIVE_UID="$(id -u)"
-if [ "$#" -eq 0 ]; then
-    if [ "$EFFECTIVE_UID" -eq 0 ]; then
-        printf 'Running as root requires --root. Run without sudo for user mode.\n' >&2
-        exit 1
-    fi
-elif [ "$#" -eq 1 ] && [ "$1" = "--root" ]; then
-    if [ "$EFFECTIVE_UID" -ne 0 ]; then
-        printf 'Root mode requires root. Run: sudo -H sh "%s" --root\n' "$0" >&2
-        exit 1
-    fi
-else
-    printf 'Usage: sh "%s" [--root]\n' "$0" >&2
+if [ "$#" -ne 0 ]; then
+    printf 'Usage: sh "%s"\n' "$0" >&2
     exit 2
 fi
 
