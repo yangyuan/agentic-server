@@ -2,7 +2,7 @@
 
 For a standard Codex installation, use the official installer:
 
-```bash
+```sh
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 ```
 
@@ -23,26 +23,26 @@ For advanced agent workflows, we recommend our setup script. It installs officia
 
 ## Setup
 
-Requires Linux x64, Bash, `curl`, `tar`, `xz`, and `python3`.
+Requires Linux x64, a POSIX shell (`sh`), `curl`, `tar`, `xz`, and `python3`.
 
-```bash
-bash setup.sh
+```sh
+sh setup.sh
 ```
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | bash
+```sh
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sh
 ```
 
 Installs the runtime under `/opt/codex` and links it at `~/.cache/codex-runtimes/codex-primary-runtime`. Codex and plugins are installed for your account; only `/opt/codex` writes require sudo.
 
 To install for root:
 
-```bash
-sudo -H bash setup.sh --root
+```sh
+sudo -H sh setup.sh --root
 ```
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sudo -H bash -s -- --root
+```sh
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sudo -H sh -s -- --root
 ```
 
 In containers already running as root, omit `sudo -H`.
@@ -51,22 +51,22 @@ In containers already running as root, omit `sudo -H`.
 
 Starts app-server in the background with the runtime environment and remote control enabled. Use the same account as setup.
 
-```bash
-bash run.sh
+```sh
+sh run.sh
 ```
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/run.sh | bash
+```sh
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/run.sh | sh
 ```
 
 `--listen URL` changes the listener (default: `unix://`). `--full-access` disables sandboxing without changing the approval policy.
 
-```bash
-bash run.sh --listen ws://127.0.0.1:4501 --full-access
+```sh
+sh run.sh --listen ws://127.0.0.1:4501 --full-access
 ```
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/run.sh | bash -s -- --listen ws://127.0.0.1:4501 --full-access
+```sh
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/run.sh | sh -s -- --listen ws://127.0.0.1:4501 --full-access
 ```
 
 ## Authentication Proxy

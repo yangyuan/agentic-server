@@ -1,22 +1,29 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
-SUDO=(sudo)
+EFFECTIVE_UID="$(id -u)"
 if [ "$#" -eq 0 ]; then
-    if [ "$EUID" -eq 0 ]; then
+    if [ "$EFFECTIVE_UID" -eq 0 ]; then
         printf 'Running as root requires --root. Run without sudo for user mode.\n' >&2
         exit 1
     fi
 elif [ "$#" -eq 1 ] && [ "$1" = "--root" ]; then
-    if [ "$EUID" -ne 0 ]; then
-        printf 'Root mode requires root. Run: sudo -H bash "%s" --root\n' "$0" >&2
+    if [ "$EFFECTIVE_UID" -ne 0 ]; then
+        printf 'Root mode requires root. Run: sudo -H sh "%s" --root\n' "$0" >&2
         exit 1
     fi
-    SUDO=()
 else
-    printf 'Usage: bash "%s" [--root]\n' "$0" >&2
+    printf 'Usage: sh "%s" [--root]\n' "$0" >&2
     exit 2
 fi
+
+run_privileged() {
+    if [ "$EFFECTIVE_UID" -eq 0 ]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
+}
 
 URL_CODEX_PRIMARY_RUNTIME_LATEST="https://persistent.oaistatic.com/codex-primary-runtime/latest/linux-x64/LATEST.json"
 
@@ -28,7 +35,7 @@ PATH_TMP_WORK="$(mktemp -d)"
 trap 'rm -rf "$PATH_TMP_WORK"' EXIT
 
 # Create the directories used for installed runtimes and Codex's runtime cache.
-"${SUDO[@]}" mkdir -p /opt/codex/runtimes
+run_privileged mkdir -p /opt/codex/runtimes
 mkdir -p "$PATH_CODEX_RUNTIMES_CACHE"
 
 # Download metadata for the latest Linux x64 Codex Primary Runtime.
@@ -48,7 +55,7 @@ print(json.load(open(sys.argv[1]))["nodeVersion"])
 
 # Download and extract the Codex Primary Runtime.
 curl -fsSL "$URL_CODEX_PRIMARY_RUNTIME_ARCHIVE" -o "$PATH_TMP_WORK/codex-primary-runtime.tar.xz"
-"${SUDO[@]}" tar -xJf "$PATH_TMP_WORK/codex-primary-runtime.tar.xz" -C /opt/codex/runtimes
+run_privileged tar -xJf "$PATH_TMP_WORK/codex-primary-runtime.tar.xz" -C /opt/codex/runtimes
 
 # Build the download URL for the matching official Node.js distribution.
 NAME_NODE_DIST="node-${VERSION_NODE}-linux-x64"
@@ -59,7 +66,7 @@ curl -fsSL "$URL_NODE_DIST" -o "$PATH_TMP_WORK/node.tar.xz"
 PATH_NODE_ROOT="$PATH_CODEX_PRIMARY_RUNTIME/dependencies/node"
 
 # Extract npm and Corepack directly into the bundled Node installation.
-"${SUDO[@]}" tar -xJf "$PATH_TMP_WORK/node.tar.xz" \
+run_privileged tar -xJf "$PATH_TMP_WORK/node.tar.xz" \
     -C "$PATH_NODE_ROOT" \
     --strip-components=1 \
     "$NAME_NODE_DIST/lib/node_modules/npm" \
@@ -75,7 +82,7 @@ ln -sfn "$PATH_CODEX_PRIMARY_RUNTIME" \
 PATH_LIBREOFFICE_PROGRAM="$PATH_CODEX_PRIMARY_RUNTIME/dependencies/native/libreoffice-headless/libreoffice/program"
 
 # Store LibreOffice's user profile in the normal per-user configuration directory.
-"${SUDO[@]}" sed -i \
+run_privileged sed -i \
     's|^UserInstallation=.*$|UserInstallation=$SYSUSERCONFIG/libreoffice/4|' \
     "$PATH_LIBREOFFICE_PROGRAM/bootstraprc"
 
@@ -100,7 +107,7 @@ fi
 exec "$PATH_PROGRAM/soffice.bin" "$@"
 EOF
 
-"${SUDO[@]}" install -m 0755 "$PATH_TMP_WORK/soffice" "$PATH_LIBREOFFICE_PROGRAM/soffice"
+run_privileged install -m 0755 "$PATH_TMP_WORK/soffice" "$PATH_LIBREOFFICE_PROGRAM/soffice"
 
 curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
 
