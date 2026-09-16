@@ -1,9 +1,16 @@
-FROM python:3.13-slim
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04 AS base
 
-RUN pip install --no-cache-dir websockets==17.0.1
+USER root
 
-WORKDIR /app
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends ca-certificates curl \
+	&& rm -rf /var/lib/apt/lists/*
 
-COPY proxy.py .
+WORKDIR /opt/agentic/proxy
 
-ENTRYPOINT ["python", "proxy.py"]
+RUN curl -fsSL \
+	https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/setup.sh \
+	-o /opt/agentic/proxy/setup.sh \
+	&& sh /opt/agentic/proxy/setup.sh
+
+ENTRYPOINT ["/opt/agentic/proxy/.venv/bin/python", "/opt/agentic/proxy/proxy.py"]

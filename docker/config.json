@@ -1,0 +1,23 @@
+{
+    "proxy": {
+        "host": "0.0.0.0",
+        "port": 4500
+    },
+    "routes": [
+        {
+            "name": "worker-1",
+            "token": "token1",
+            "socket": "/opt/agentic/worker-1/app-server.sock"
+        },
+        {
+            "name": "worker-2",
+            "token": "token2",
+            "socket": "/opt/agentic/worker-2/app-server.sock"
+        },
+        {
+            "name": "worker-3",
+            "token": "token3",
+            "socket": "ws://localhost:4500"
+        }
+    ]
+}

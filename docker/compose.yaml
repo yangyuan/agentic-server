@@ -8,11 +8,13 @@ services:
       dockerfile: Dockerfile
     image: agentic-proxy:latest
     restart: unless-stopped
+    command: ["--config-file", "/opt/agentic/proxy/config.json"]
     ports:
       - "4500:4500"
-    networks:
-      - network-worker-1
-      - network-worker-2
+    volumes:
+      - ./config.json:/opt/agentic/proxy/config.json:ro
+      - socket-worker-1:/opt/agentic/worker-1:ro
+      - socket-worker-2:/opt/agentic/worker-2:ro
 
   worker-1:
     container_name: codex-worker-1
@@ -22,15 +24,14 @@ services:
       dockerfile: Dockerfile
     image: agentic-codex:latest
     restart: unless-stopped
-    networks:
-      - network-worker-1
     depends_on:
       - master
     entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
-    command: ["--listen", "ws://0.0.0.0:4500", "--remote-control"]
+    command: ["--listen", "unix:///opt/agentic/app-server.sock", "--remote-control"]
     volumes:
       - ./codex/container-entrypoint.sh:/container-entrypoint.sh:ro
       - ./data/worker-1:/persist
+      - socket-worker-1:/opt/agentic
 
   worker-2:
     container_name: codex-worker-2
@@ -40,16 +41,15 @@ services:
       dockerfile: Dockerfile
     image: agentic-codex:latest
     restart: unless-stopped
-    networks:
-      - network-worker-2
     depends_on:
       - master
     entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
-    command: ["--listen", "ws://0.0.0.0:4500", "--remote-control"]
+    command: ["--listen", "unix:///opt/agentic/app-server.sock", "--remote-control"]
     volumes:
       - ./codex/container-entrypoint.sh:/container-entrypoint.sh:ro
       - ./data/worker-2:/persist
+      - socket-worker-2:/opt/agentic
 
-networks:
-  network-worker-1: {}
-  network-worker-2: {}
+volumes:
+  socket-worker-1: {}
+  socket-worker-2: {}
