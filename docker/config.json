@@ -13,11 +13,6 @@
             "name": "worker-2",
             "token": "token2",
             "socket": "/opt/agentic/worker-2/app-server.sock"
-        },
-        {
-            "name": "worker-3",
-            "token": "token3",
-            "socket": "ws://localhost:4500"
         }
     ]
 }

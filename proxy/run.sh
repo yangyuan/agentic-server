@@ -1,6 +1,17 @@
 #!/bin/sh
 set -eu
 
+EFFECTIVE_UID="$(id -u)"
+EFFECTIVE_GID="$(id -g)"
+
+run_privileged() {
+	if [ "$EFFECTIVE_UID" -eq 0 ]; then
+		"$@"
+	else
+		sudo "$@"
+	fi
+}
+
 PATH_PROXY_RUNTIME="/opt/agentic/proxy"
 HOST="0.0.0.0"
 PORT="4500"
@@ -43,6 +54,8 @@ if [ ! -x "$PATH_PROXY_RUNTIME/.venv/bin/python" ] || [ ! -f "$PATH_PROXY_RUNTIM
 fi
 
 umask 077
+PATH_TMP_WORK="$(mktemp -d)"
+trap 'rm -rf "$PATH_TMP_WORK"' EXIT
 
 "$PATH_PROXY_RUNTIME/.venv/bin/python" -c '
 import json, sys
@@ -54,8 +67,12 @@ config = {
     "routes": [route],
 }
 print(json.dumps(config, indent=2))
-' "$HOST" "$PORT" "$ACCESS_TOKEN" "$SOCKET" "$ACCESS_TOKEN_SET" > "$PATH_PROXY_RUNTIME/config.json.tmp"
-mv "$PATH_PROXY_RUNTIME/config.json.tmp" "$PATH_PROXY_RUNTIME/config.json"
+' "$HOST" "$PORT" "$ACCESS_TOKEN" "$SOCKET" "$ACCESS_TOKEN_SET" > "$PATH_TMP_WORK/config.json"
+run_privileged install -m 0600 -o "$EFFECTIVE_UID" -g "$EFFECTIVE_GID" \
+	"$PATH_TMP_WORK/config.json" "$PATH_PROXY_RUNTIME/config.json.tmp"
+run_privileged mv "$PATH_PROXY_RUNTIME/config.json.tmp" "$PATH_PROXY_RUNTIME/config.json"
+rm -rf "$PATH_TMP_WORK"
+trap - EXIT
 
 exec "$PATH_PROXY_RUNTIME/.venv/bin/python" "$PATH_PROXY_RUNTIME/proxy.py" \
 	--config-file "$PATH_PROXY_RUNTIME/config.json"

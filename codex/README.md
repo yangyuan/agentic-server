@@ -65,14 +65,12 @@ We provide a simple [proxy.py](../proxy/proxy.py) that checks each client's conf
 curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/setup.sh | sh
 ```
 
-[run.sh](../proxy/run.sh) writes `/opt/agentic/proxy/config.json` from its options and starts the installed proxy in the foreground. Run it with `sudo` to write that system directory:
+[run.sh](../proxy/run.sh) writes `/opt/agentic/proxy/config.json` from its options and starts the installed proxy in the foreground. It automatically uses `sudo` for config installation when needed; the proxy itself runs as your account:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/run.sh | sudo -H sh -s -- --host 127.0.0.1 --port 4500 --access-token token \
-	--sock "$HOME/.codex/app-server-control/app-server-control.sock"
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/run.sh | sh -s -- --host 127.0.0.1 --port 4500 --access-token token \
+	--sock '~/.codex/app-server-control/app-server-control.sock'
 ```
-
-The shell expands `$HOME` before `sudo`, so the example connects to your account's Codex socket. When already running as root, use `sh` instead of `sudo -H sh`.
 
 All four options are optional. Defaults are host `0.0.0.0`, port `4500`, no authentication, and socket `~/.codex/app-server-control/app-server-control.sock`. Use `--host 127.0.0.1` for local-only access. Omitting `--access-token` omits the route's token field; passing `--access-token ""` requires an explicit empty query token (`?token=`).
 
