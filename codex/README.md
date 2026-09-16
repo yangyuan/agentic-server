@@ -68,11 +68,11 @@ curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/prox
 [run.sh](../proxy/run.sh) writes `/opt/agentic/proxy/config.json` from its options and starts the installed proxy in the background. It automatically uses `sudo` for config installation when needed; the proxy itself runs as your account:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/run.sh | sh -s -- --host 127.0.0.1 --port 4500 --access-token token \
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/proxy/run.sh | sh -s -- --host 127.0.0.1 --port 4500 --token token \
 	--sock '~/.codex/app-server-control/app-server-control.sock'
 ```
 
-All four options are optional. Defaults are host `0.0.0.0`, port `4500`, no authentication, and socket `~/.codex/app-server-control/app-server-control.sock`. Use `--host 127.0.0.1` for local-only access. Omitting `--access-token` omits the route's token field; passing `--access-token ""` requires an explicit empty query token (`?token=`).
+All four options are optional. Defaults are host `0.0.0.0`, port `4500`, no authentication, and socket `~/.codex/app-server-control/app-server-control.sock`. Use `--host 127.0.0.1` for local-only access. Omitting `--token` omits the route's token field; passing `--token ""` requires an explicit empty query token (`?token=`).
 
 Stop the running proxy before rerunning the launcher on the same port. Each launch rewrites the generated config; it does not reinstall dependencies or refresh the Python script.
 

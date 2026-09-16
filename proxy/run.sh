@@ -21,7 +21,7 @@ SOCKET="~/.codex/app-server-control/app-server-control.sock"
 
 while [ "$#" -gt 0 ]; do
 	case "$1" in
-		--host|--port|--access-token|--sock)
+		--host|--port|--token|--sock)
 			if [ "$#" -lt 2 ]; then
 				printf 'Missing value for %s\n' "$1" >&2
 				exit 2
@@ -29,7 +29,7 @@ while [ "$#" -gt 0 ]; do
 			case "$1" in
 				--host) HOST="$2" ;;
 				--port) PORT="$2" ;;
-				--access-token)
+				--token)
 					ACCESS_TOKEN="$2"
 					ACCESS_TOKEN_SET=true
 					;;
@@ -38,7 +38,7 @@ while [ "$#" -gt 0 ]; do
 			shift 2
 			;;
 		-h|--help)
-			printf 'Usage: sh run.sh [--host HOST] [--port PORT] [--access-token TOKEN] [--sock SOCKET]\n'
+			printf 'Usage: sh run.sh [--host HOST] [--port PORT] [--token TOKEN] [--sock SOCKET]\n'
 			exit 0
 			;;
 		*)
