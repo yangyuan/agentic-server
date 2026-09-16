@@ -17,8 +17,6 @@ if [ ! -x "$PATH_PROXY_RUNTIME/.venv/bin/python" ]; then
 	"$PATH_PROXY_RUNTIME/.venv/bin/python" -m pip install --no-cache-dir websockets
 fi
 
-if [ ! -f "$PATH_PROXY_RUNTIME/proxy.py" ]; then
-	cp "$(dirname -- "$0")/proxy.py" "$PATH_PROXY_RUNTIME/proxy.py"
-fi
+cp "$(dirname -- "$0")/proxy.py" "$PATH_PROXY_RUNTIME/proxy.py"
 
 "$PATH_PROXY_RUNTIME/.venv/bin/python" "$PATH_PROXY_RUNTIME/proxy.py" "$@" &

@@ -1,0 +1,46 @@
+name: codex
+services:
+  master:
+    container_name: master
+    platform: linux/amd64
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    image: codex-proxy:latest
+    restart: unless-stopped
+    ports:
+      - "4500:4500"
+
+  codex-worker-1:
+    container_name: codex-worker-1
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: base-codex:latest
+    restart: unless-stopped
+    network_mode: service:master
+    depends_on:
+      - master
+    entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
+    command: ["--listen", "ws://127.0.0.1:4501", "--remote-control"]
+    volumes:
+      - ./container-entrypoint.sh:/container-entrypoint.sh:ro
+      - ./data/worker-1:/persist
+
+  codex-worker-2:
+    container_name: codex-worker-2
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: base-codex:latest
+    restart: unless-stopped
+    network_mode: service:master
+    depends_on:
+      - master
+    entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
+    command: ["--listen", "ws://127.0.0.1:4502", "--remote-control"]
+    volumes:
+      - ./container-entrypoint.sh:/container-entrypoint.sh:ro
+      - ./data/worker-2:/persist

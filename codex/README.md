@@ -58,6 +58,14 @@ curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/code
 
 ## Proxy Example (Optional)
 
-[proxy.py](proxy.py) demonstrates token authentication in front of a Unix socket or WebSocket upstream. It is reference code, not a production proxy; use authentication and TLS appropriate to your deployment.
+[proxy.py](proxy/proxy.py) demonstrates token authentication in front of Unix socket or WebSocket upstreams. It is reference code, not a production proxy; use authentication and TLS appropriate to your deployment.
 
-[proxy.sh](proxy.sh) installs dependencies and starts the example in the background. It forwards `--target`, `--host`, and `--port`; clients authenticate with `?token=<ACCESS_TOKEN>`.
+[proxy.sh](proxy/proxy.sh) installs dependencies and starts the example in the background:
+
+```bash
+bash proxy/proxy.sh --host 127.0.0.1 --port 4500
+```
+
+Configure access tokens and their upstream targets in the `ROUTES` dictionary. Clients authenticate with `?token=<TOKEN>`, where `TOKEN` is a key in `ROUTES`. Replace the example tokens before exposing the proxy.
+
+Use `--host` and `--port` to set the listening address and port. Defaults are `0.0.0.0` and `4500`; the example above limits access to the local machine.
