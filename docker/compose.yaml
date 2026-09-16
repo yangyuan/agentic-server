@@ -4,9 +4,9 @@ services:
     container_name: master
     platform: linux/amd64
     build:
-      context: ./proxy
+      context: ./master
       dockerfile: Dockerfile
-    image: agentic-proxy:latest
+    image: agentic-master:latest
     restart: unless-stopped
     command: ["--config-file", "/opt/agentic/proxy/config.json"]
     ports:
