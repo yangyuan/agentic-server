@@ -10,37 +10,46 @@ services:
     restart: unless-stopped
     ports:
       - "4500:4500"
+    networks:
+      - network-worker-1
+      - network-worker-2
 
-  codex-worker-1:
+  worker-1:
     container_name: codex-worker-1
     platform: linux/amd64
     build:
       context: ./codex
       dockerfile: Dockerfile
-    image: base-codex:latest
+    image: agentic-codex:latest
     restart: unless-stopped
-    network_mode: service:master
+    networks:
+      - network-worker-1
     depends_on:
       - master
     entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
-    command: ["--listen", "ws://127.0.0.1:4501", "--remote-control"]
+    command: ["--listen", "ws://0.0.0.0:4500", "--remote-control"]
     volumes:
       - ./codex/container-entrypoint.sh:/container-entrypoint.sh:ro
       - ./data/worker-1:/persist
 
-  codex-worker-2:
+  worker-2:
     container_name: codex-worker-2
     platform: linux/amd64
     build:
       context: ./codex
       dockerfile: Dockerfile
-    image: base-codex:latest
+    image: agentic-codex:latest
     restart: unless-stopped
-    network_mode: service:master
+    networks:
+      - network-worker-2
     depends_on:
       - master
     entrypoint: ["/bin/sh", "/container-entrypoint.sh"]
-    command: ["--listen", "ws://127.0.0.1:4502", "--remote-control"]
+    command: ["--listen", "ws://0.0.0.0:4500", "--remote-control"]
     volumes:
       - ./codex/container-entrypoint.sh:/container-entrypoint.sh:ro
       - ./data/worker-2:/persist
+
+networks:
+  network-worker-1: {}
+  network-worker-2: {}

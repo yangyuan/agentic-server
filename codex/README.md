@@ -6,7 +6,20 @@ For a standard Codex installation, use the official installer:
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 ```
 
-For advanced agent workflows, we recommend our setup script. It installs Codex with supporting runtimes, tools, and plugins, and is optimized for Docker deployments.
+Start app-server:
+
+```sh
+# Start app-server with a Unix socket
+codex app-server --listen unix://
+
+# Or listen on a WebSocket
+codex app-server --listen ws://127.0.0.1:4501
+
+# You can also enable ChatGPT remote control with --remote-control, not conflicting with --listen.
+codex app-server --listen ws://0.0.0.0:4501 --remote-control
+```
+
+For advanced agent workflows, we recommend our setup script. It installs official Codex with supporting official runtimes, tools, and plugins, and is optimized for container deployments.
 
 ## Setup
 
@@ -56,16 +69,28 @@ bash run.sh --listen ws://127.0.0.1:4501 --full-access
 curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/run.sh | bash -s -- --listen ws://127.0.0.1:4501 --full-access
 ```
 
-## Proxy Example (Optional)
+## Authentication Proxy
 
-[proxy.py](proxy/proxy.py) demonstrates token authentication in front of Unix socket or WebSocket upstreams. It is reference code, not a production proxy; use authentication and TLS appropriate to your deployment.
+Do not expose an unauthenticated app-server WebSocket endpoint to untrusted networks. Keep the app-server on localhost or a private container network.
 
-[proxy.sh](proxy/proxy.sh) installs dependencies and starts the example in the background:
+We provide a simple [proxy.py](proxy/proxy.py) that checks each client's access token before forwarding its connection to the configured Unix socket or WebSocket upstream. Expose the proxy instead of the app-server, and use TLS (`wss://`) or a private encrypted network for remote access.
 
-```bash
-bash proxy/proxy.sh --host 127.0.0.1 --port 4500
+[proxy.sh](proxy/proxy.sh) installs dependencies and starts the proxy in the background. Run as root on Debian/Ubuntu:
+
+```sh
+sh proxy/proxy.sh --host 127.0.0.1 --port 4500
 ```
 
+Or install without cloning the repository:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/proxy/proxy.sh | sh -s -- --host 127.0.0.1 --port 4500
+```
+
+From a non-root account, use `sudo -H sh` instead of `sh`. The piped installer downloads the Python script to `/opt/proxy/proxy.py` only if it is absent, preserving existing customizations. Local installation copies the adjacent Python script instead.
+
 Configure access tokens and their upstream targets in the `ROUTES` dictionary. Clients authenticate with `?token=<TOKEN>`, where `TOKEN` is a key in `ROUTES`. Replace the example tokens before exposing the proxy.
+
+For a piped installation, edit `/opt/proxy/proxy.py`. Socket paths starting with `~` use the proxy process's home directory; use an absolute path for a socket owned by another account.
 
 Use `--host` and `--port` to set the listening address and port. Defaults are `0.0.0.0` and `4500`; the example above limits access to the local machine.

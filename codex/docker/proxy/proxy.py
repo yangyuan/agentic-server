@@ -11,8 +11,8 @@ from websockets.exceptions import ConnectionClosed
 TOKEN_WORKER_1 = "token1"
 TOKEN_WORKER_2 = "token2"
 ROUTES = {
-    TOKEN_WORKER_1: "ws://127.0.0.1:4501",
-    TOKEN_WORKER_2: "ws://127.0.0.1:4502",
+    TOKEN_WORKER_1: "ws://worker-1:4500",
+    TOKEN_WORKER_2: "ws://worker-2:4500",
 }
 
 
