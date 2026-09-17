@@ -17,9 +17,15 @@ RUN curl -fsSL \
     && sh /tmp/setup-codex.sh \
     && rm /tmp/setup-codex.sh
 
+RUN curl -fsSL \
+        https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/ubuntu/setup.sh \
+        -o /tmp/setup-ubuntu.sh \
+    && sh /tmp/setup-ubuntu.sh \
+    && rm /tmp/setup-ubuntu.sh
+
 ENV PATH="/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/root/.local/bin:${PATH}:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback"
 
 WORKDIR /workspace
 
 ENTRYPOINT ["codex", "-c", "sandbox_mode=\"danger-full-access\"", "app-server"]
-CMD ["--listen", "ws://127.0.0.1:4500", "--remote-control"]
+CMD ["--listen", "unix://", "--remote-control"]

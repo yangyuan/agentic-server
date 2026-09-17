@@ -25,6 +25,18 @@ For advanced agent workflows, we recommend our setup script. It installs officia
 
 Requires Linux x64, a POSIX shell (`sh`), `curl`, `tar`, `xz`, and `python3`.
 
+On Ubuntu 24.04, [Ubuntu setup](ubuntu/setup.sh) installs prerequisites and extra tools:
+
+```sh
+# All packages (default)
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/ubuntu/setup.sh | sh
+
+# Prerequisites only
+curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/ubuntu/setup.sh | sh -s -- --essential
+```
+
+Then install Codex and its supporting runtime:
+
 ```sh
 curl -fsSL https://raw.githubusercontent.com/yangyuan/agentic-server/master/codex/app-server/setup.sh | sh
 ```
