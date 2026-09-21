@@ -44,7 +44,6 @@ async def handler(client_ws, routes):
             target,
             compression=None,
             proxy=None,
-            ping_interval=None,
             max_size=CODEX_RESPONSE_MAX_SIZE,
         )
     else:
@@ -53,7 +52,6 @@ async def handler(client_ws, routes):
             uri="ws://localhost/",
             compression=None,
             proxy=None,
-            ping_interval=None,
             max_size=CODEX_RESPONSE_MAX_SIZE,
         )
 
@@ -115,7 +113,6 @@ async def main():
         proxy_config["host"],
         proxy_config["port"],
         process_request=partial(auth, routes=routes),
-        ping_interval=None,
         max_size=CODEX_RESPONSE_MAX_SIZE,
     ):
         await asyncio.Future()
