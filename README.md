@@ -11,9 +11,11 @@ Agentic Server
 
 ### Windows
 
-<a href="https://get.microsoft.com/installer/download/9mtvqrm8q679?referrer=appbadge" target="_self" >
+<a href="https://apps.microsoft.com/detail/9mtvqrm8q679?referrer=appbadge&mode=full" target="_blank" rel="noopener noreferrer">
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
+
+[Download direct installer](https://get.microsoft.com/installer/download/9mtvqrm8q679?referrer=appbadge)
 
 ## Codex App-Server Setup
 
