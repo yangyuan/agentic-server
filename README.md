@@ -1,6 +1,19 @@
 # agentic-server
 Agentic Server
 
+## Client Downloads
+
+### macOS and iOS
+
+<a href="https://apps.apple.com/app/id6809080918" target="_self">
+	<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" width="200" alt="Download on the App Store for macOS and iOS"/>
+</a>
+
+### Windows
+
+<a href="https://get.microsoft.com/installer/download/9mtvqrm8q679?referrer=appbadge" target="_self" >
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
+</a>
 
 ## Codex App-Server Setup
 
